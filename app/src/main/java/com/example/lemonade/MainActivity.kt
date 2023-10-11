@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -54,7 +55,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Lemonade(modifier: Modifier = Modifier) {
-    var make_lemonade_step by remember { mutableStateOf(4) }
+    var make_lemonade_step by remember { mutableStateOf(1) }
 
     var step_instruction = when (make_lemonade_step) {
         1 -> R.string.Lemon_tree
@@ -82,6 +83,7 @@ fun Lemonade(modifier: Modifier = Modifier) {
 
     Column(
         modifier = modifier,
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -104,9 +106,12 @@ fun Lemonade(modifier: Modifier = Modifier) {
         }
 
         Image(
+
             painter = painterResource(imageResource),
             contentDescription = step_contentDescription.toString(),
 //            TODO alignment = CenterVertically,
+            modifier = Modifier
+                .clickable { make_lemonade_step = (make_lemonade_step+1) % 4 },
         )
         Text(
             text = stringResource(id = step_instruction),
