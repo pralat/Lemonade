@@ -95,7 +95,8 @@ fun Lemonade(modifier: Modifier = Modifier) {
 
         Row(
             modifier = modifier
-                .background(Color.Yellow)
+//                .background(Color.Yellow)
+                .background(Color(0xfff5e468))
                 .height(48.dp)
                 .fillMaxWidth(1f),
             horizontalArrangement = Arrangement.Center,
@@ -130,9 +131,12 @@ fun Lemonade(modifier: Modifier = Modifier) {
 @Composable
 fun LemonadeInBox(modifier: Modifier = Modifier) {
     var make_lemonade_step by remember { mutableStateOf(1) }
+    var squeezeCount by remember { mutableStateOf(0) }
+
+    // (2..4).random()
 
     // only needed in step 2 when squeezing the lemon
-    var squeezeCount = (2..4).random()
+//    var squeezeCount = 0 // (2..4).random()
 
 //        var squeezeCount = when (make_lemonade_step) {
 //            2 -> {
@@ -141,7 +145,7 @@ fun LemonadeInBox(modifier: Modifier = Modifier) {
 //            else -> 1
 //        }
 
-    println("squeezeCount: $squeezeCount")
+//    println("squeezeCount: $squeezeCount")
 
     var step_instruction = when (make_lemonade_step) {
         1 -> R.string.Lemon_tree
@@ -157,10 +161,10 @@ fun LemonadeInBox(modifier: Modifier = Modifier) {
         else -> R.string.Empty_glass_description
     }
 
-    when (make_lemonade_step) {
-        2 -> squeezeCount = 3 /// squeezeCount.random(2..4)
-        else -> squeezeCount = 1
-    }
+//    when (make_lemonade_step) {
+//        2 -> squeezeCount = 3 /// squeezeCount.random(2..4)
+//        else -> squeezeCount = 1
+//    }
 
     val imageResource = when (make_lemonade_step) {
         1 -> R.drawable.lemon_tree
@@ -172,14 +176,17 @@ fun LemonadeInBox(modifier: Modifier = Modifier) {
     Box {
         Row(
             modifier = modifier
-                .background(Color.Yellow)
+//                .background(Color.Yellow)
+                .background(Color(0xfff5e468))
                 .height(48.dp)
                 .fillMaxWidth(1f),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = CenterVertically,
         ) {
             Text(
+//                text = stringResource(id = R.string.app_name) + " SC: $squeezeCount",
                 text = stringResource(id = R.string.app_name),
+
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -199,13 +206,35 @@ fun LemonadeInBox(modifier: Modifier = Modifier) {
                 .clip(RoundedCornerShape(26.dp))
                 .size(250.dp)
 //                .background(color = Color(0xFFE0FFFF), shape = RoundRectShape())
-                .background(color = Color(0xFFE0FFFF))
+//       last good         .background(color = Color(0xFFE0FFFF))
+                // from using Digital Color Meter 203/235/212
+                .background(color = Color(0xFFCBEBD4))
 
-                .clickable { make_lemonade_step = (make_lemonade_step+1) % 4 },
+
+                .clickable {
+                    if (make_lemonade_step == 2) {
+                        if (squeezeCount == 0) { // first time here in step 2
+                            squeezeCount = (2..4).random()
+                            println("set SC == $squeezeCount")
+                        }
+
+                        if (--squeezeCount > 0) {
+//                            make_lemonade_step = (make_lemonade_step + 1) % 4
+                            println("SC now $squeezeCount")
+                        }
+                        else {
+                            make_lemonade_step = (make_lemonade_step + 1) % 4
+                            println("MLS now $make_lemonade_step")
+                        }
+                    } else {
+                        make_lemonade_step = (make_lemonade_step + 1) % 4
+                        println("SC now $squeezeCount MLS now $make_lemonade_step")
+                    }
+                },
         )
         Spacer(modifier = Modifier.height(36.dp))
         Text(
-            text = stringResource(id = step_instruction),
+            text = stringResource(id = step_instruction)  + " sc $squeezeCount",
             modifier = modifier
         )
     }
